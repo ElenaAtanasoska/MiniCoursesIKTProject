@@ -1,0 +1,24 @@
+# This is a generated file. Not intended for manual editing.
+version: "3.9"
+services:
+  app:
+    build:
+      context: "D:\\FINKI\\Semester 8\\Upravuvanje na IKT Proekti\\MiniCoursesIKTProject"
+      dockerfile: "MiniCoursesIKTProject/Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net8.0/MiniCoursesIKTProject.dll"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_STATICWEBASSETS: "/app/bin/Debug/net8.0/MiniCoursesIKTProject.staticwebassets.runtime.CT.json"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "minicoursesiktproject:dev"
+    ports: []
+    volumes:
+    - "C:\\Users\\teodo\\.nuget\\packages:/home/app/.nuget/packages"
+    - "D:\\FINKI\\Semester 8\\Upravuvanje na IKT Proekti\\MiniCoursesIKTProject\\\
+      MiniCoursesIKTProject:/app:rw"
+    - "D:\\FINKI\\Semester 8\\Upravuvanje na IKT Proekti\\MiniCoursesIKTProject:/src:rw"
+    working_dir: "/app"
