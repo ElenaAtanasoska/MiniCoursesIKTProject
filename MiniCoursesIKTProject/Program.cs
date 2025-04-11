@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MiniCoursesDomain.Identity;
 using MiniCoursesRepository;
+using MiniCoursesRepository.Repository.Implementation;
+using MiniCoursesRepository.Repository.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,17 +14,21 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-builder.Services.AddIdentityCore<Student>()
+builder.Services.AddIdentityCore<User>()
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<Student>(options => options.SignIn.RequireConfirmedAccount = false)
+builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IFIleRepository, FIleRepository>();
+builder.Services.AddScoped<IHomeworkRepository, HomeworkRepository>();
+builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();
 
 var app = builder.Build();
 
@@ -44,8 +50,8 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    "default",
+    "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
 using (var scope = app.Services.CreateScope())
 {
@@ -57,32 +63,30 @@ using (var scope = app.Services.CreateScope())
         "Student"
     };
     foreach (var role in roles)
-    {
         if (!await RoleManager.RoleExistsAsync(role))
             await RoleManager.CreateAsync(new IdentityRole(role));
-    }
 }
 
 using (var scope = app.Services.CreateScope())
 {
-    var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<Student>>();
+    var UserManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 
-    string email = "admin@admin.com";
-    string sitename = "admin@admin.com";
-    string password = "Kai.123";
+    var email = "admin@admin.com";
+    var sitename = "admin@admin.com";
+    var password = "Kai.123Kai.123";
     //////////////////////////////
-    string email2 = "editor@edit.com";
-    string sitename2 = "editor@edit.com";
-    string passwrod2 = "Kai.123";
+    var email2 = "editor@edit.com";
+    var sitename2 = "editor@edit.com";
+    var passwrod2 = "Kai.123";
     ///////////////////////////////
-    string student1 = "211065@student.minicourses.com";
-    string studentname = "211065@student.minicourses.com";
-    string Name = "Kire";
-    string Prezime = "Smilkov";
-    string indeks = "211065";
+    var student1 = "211065@student.minicourses.com";
+    var studentname = "211065@student.minicourses.com";
+    var Name = "Kire";
+    var Prezime = "Smilkov";
+    var indeks = "211065";
     if (await UserManager.FindByEmailAsync(email) == null)
     {
-        var user = new Student();
+        var user = new User();
         user.Email = email;
         user.UserName = sitename;
         await UserManager.CreateAsync(user, password);
@@ -91,7 +95,7 @@ using (var scope = app.Services.CreateScope())
 
     if (await UserManager.FindByEmailAsync(email2) == null)
     {
-        var user2 = new Student();
+        var user2 = new User();
         user2.Email = email2;
         user2.UserName = sitename2;
         await UserManager.CreateAsync(user2, passwrod2);
@@ -100,7 +104,7 @@ using (var scope = app.Services.CreateScope())
 
     if (await UserManager.FindByEmailAsync(student1) == null)
     {
-        var user3 = new Student();
+        var user3 = new User();
         user3.Email = student1;
         user3.UserName = studentname;
         user3.Name = Name;

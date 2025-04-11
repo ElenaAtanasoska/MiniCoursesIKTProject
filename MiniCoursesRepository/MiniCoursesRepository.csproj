@@ -9,22 +9,22 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.3"/>
         <PackageReference Include="Npgsql" Version="8.0.0"/>
-        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0"/>
     </ItemGroup>
-    
+
     <ItemGroup>
         <Folder Include="Implementation\"/>
         <Folder Include="Interface\"/>
         <Folder Include="Migrations\"/>
     </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Implementation\" />
-    <Folder Include="Interface\" />
-  </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Implementation\"/>
+        <Folder Include="Interface\"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\MiniCoursesDomain\MiniCoursesDomain.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\MiniCoursesDomain\MiniCoursesDomain.csproj"/>
+    </ItemGroup>
 
 </Project>
