@@ -1,0 +1,88 @@
+﻿@model MiniCoursesDomain.Identity.User
+
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Students online sidebar -->
+        <div class="col-md-2">
+            <div class="bg-light border rounded p-2">
+                <h6>Students online:</h6>
+                @for (int i = 0; i < 6; i++)
+                {
+                    <div class="d-flex align-items-center justify-content-start mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="bi bi-person-circle me-1" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                        </svg>
+                        <span>Username</span>
+                        <span class="badge bg-success rounded-circle" style="width:10px; height:10px;"></span>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Main profile content -->
+        <div class="col-md-10">
+            <div class="d-flex align-items-center mb-3 bg-light border rounded p-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person-circle mx-3" viewBox="0 0 16 16">
+                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                    <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                </svg>                <div>
+                    <h5 >@Model.Name @Model.LastName</h5>
+                    <p class="mb-0">Role: ADMIN / EDITOR / STUDENT</p>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                </p>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="mb-0">Subjects and Grades</h6>
+                <button class="btn btn-primary">Download grades</button>
+            </div>
+
+            <div style="height: 50vh;" class="overflow-y-scroll bg-light border rounded p-3">
+                <table class="table table-bordered mb-0">
+                    <thead>
+                        <tr>
+                            <th>Subject name</th>
+                            <th>Grade</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var s in Model.SubjectsGrades)
+                        {
+                            <tr>
+                                <td>@s.Subject.Name</td>
+                                <td>@(s.Grade.HasValue ? s.Grade.Value.ToString() : "-")</td>
+                                <td>
+                                    @if (s.RequestStatus == MiniCoursesDomain.Enums.SubjectRequestStatus.Accepted)
+                                    {
+                                        <span class="badge bg-success">Accepted</span>
+                                    }
+                                    else if (s.RequestStatus == MiniCoursesDomain.Enums.SubjectRequestStatus.Rejected)
+                                    {
+                                        <span class="badge bg-danger">Rejected</span>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-sm btn-success me-1">Accept</button>
+                                        <button class="btn btn-sm btn-danger">Reject</button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>

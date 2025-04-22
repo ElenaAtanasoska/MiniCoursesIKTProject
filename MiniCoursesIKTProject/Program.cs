@@ -4,6 +4,8 @@ using MiniCoursesDomain.Identity;
 using MiniCoursesRepository;
 using MiniCoursesRepository.Repository.Implementation;
 using MiniCoursesRepository.Repository.Interfaces;
+using MiniCoursesService.Implementation;
+using MiniCoursesService.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,9 +28,13 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+
+builder.Services.AddScoped(typeof(IStudentRepository), typeof(StudentRepository));
 builder.Services.AddScoped<IFIleRepository, FIleRepository>();
 builder.Services.AddScoped<IHomeworkRepository, HomeworkRepository>();
 builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();
+
+builder.Services.AddTransient<IStudentService, StudentService>();
 
 var app = builder.Build();
 
@@ -60,7 +66,8 @@ using (var scope = app.Services.CreateScope())
     {
         "Admin",
         "Editor",
-        "Student"
+        "Student",
+        "Professor"
     };
     foreach (var role in roles)
         if (!await RoleManager.RoleExistsAsync(role))
@@ -84,6 +91,11 @@ using (var scope = app.Services.CreateScope())
     var Name = "Kire";
     var Prezime = "Smilkov";
     var indeks = "211065";
+    ///////////////////////////////
+    var professor1 = "antovski@minicourses.com";
+    var professorName = "antovski@minicourses.com";
+    var Name1 = "Ljupcho";
+    var Prezime1 = "Antovski";
     if (await UserManager.FindByEmailAsync(email) == null)
     {
         var user = new User();
@@ -112,6 +124,19 @@ using (var scope = app.Services.CreateScope())
         user3.Indeks = indeks;
         await UserManager.CreateAsync(user3, passwrod2);
         await UserManager.AddToRoleAsync(user3, "Student");
+    }
+    
+    if (await UserManager.FindByEmailAsync(professor1) == null)
+    {
+        var user4 = new User
+        {
+            Email = professor1,
+            UserName = professorName,
+            Name = Name1,
+            LastName = Prezime1
+        };
+        await UserManager.CreateAsync(user4, passwrod2);
+        await UserManager.AddToRoleAsync(user4, "Professor");
     }
 }
 

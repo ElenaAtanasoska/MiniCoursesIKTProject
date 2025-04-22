@@ -7,9 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="Implementation\"/>
         <Folder Include="Interfaces\" />
-        <Folder Include="Interface\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\MiniCoursesDomain\MiniCoursesDomain.csproj" />
+      <ProjectReference Include="..\MiniCoursesRepository\MiniCoursesRepository.csproj" />
     </ItemGroup>
 
 </Project>
