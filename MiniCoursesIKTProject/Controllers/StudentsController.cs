@@ -1,11 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using MiniCoursesDomain.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
 using MiniCoursesDomain.Identity;
-using MiniCoursesService.Implementation;
 using MiniCoursesService.Interface;
-using System.Security.Claims;
 using MiniCoursesDomain.DTO;
 
 namespace MiniCoursesIKTProject.Controllers
@@ -23,7 +18,7 @@ namespace MiniCoursesIKTProject.Controllers
         public async Task<IActionResult> Index()
         { 
             var students = await _studentService.GetAllStudentsAsync();
-            return View(students); 
+            return View(students.ToList()); 
         }
 
         public async Task<IActionResult> Details(string id)

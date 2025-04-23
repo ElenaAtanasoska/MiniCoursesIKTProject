@@ -1,0 +1,51 @@
+@model List<MiniCoursesDomain.Entities.SemesterApplication>
+
+@{
+    ViewData["Title"] = "Manage Semester Applications";
+}
+
+<h1>Manage Semester Applications</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Student</th>
+        <th>Semester</th>
+        <th>Type</th>
+        <th>Year</th>
+        <th>Subjects</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var application in Model)
+    {
+        <tr>
+            <td>@application.Student?.Name @application.Student?.LastName (@application.StudentId)</td>
+            <td>@application.Semester</td>
+            <td>@application.SemesterType</td>
+            <td>@application.Year</td>
+            <td>
+                <ul>
+                    @foreach (var subject in application.Subjects)
+                    {
+                        <li>@subject.Subject?.Name (@subject.Subject?.Code)</li>
+                    }
+                </ul>
+            </td>
+            <td>@application.Status</td>
+            <td>
+                <form asp-action="AcceptApplication" method="post" style="display:inline;">
+                    <input type="hidden" name="id" value="@application.Id" />
+                    <button type="submit" class="btn btn-success btn-sm">Accept</button>
+                </form>
+                <form asp-action="RejectApplication" method="post" style="display:inline;">
+                    <input type="hidden" name="id" value="@application.Id" />
+                    <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

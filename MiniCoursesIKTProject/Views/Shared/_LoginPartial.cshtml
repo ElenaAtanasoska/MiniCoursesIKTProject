@@ -6,8 +6,9 @@
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
+    var currentUser = await UserManager.GetUserAsync(User);
     <li class="nav-item">
-            <a class="nav-link text-white" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Welcome, @User.Identity?.Name! <i class="bi bi-person-circle"></i></a>
+            <a class="nav-link text-white" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">@currentUser.Name @currentUser.LastName <i class="bi bi-person-circle"></i></a>
     </li>
     <li class="nav-item">
         <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">

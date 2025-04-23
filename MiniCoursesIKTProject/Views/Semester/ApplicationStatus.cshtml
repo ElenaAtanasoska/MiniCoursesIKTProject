@@ -1,0 +1,40 @@
+@model List<MiniCoursesDomain.Entities.SemesterApplication>
+
+@{
+    ViewData["Title"] = "Semester Application Status";
+}
+
+<h1>Semester Application Status</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Semester</th>
+        <th>Type</th>
+        <th>Year</th>
+        <th>Subjects</th>
+        <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var application in Model)
+    {
+        <tr>
+            <td>@application.Semester</td>
+            <td>@application.SemesterType</td>
+            <td>@application.Year</td>
+            <td>
+                <ul>
+                    @foreach (var subject in application.Subjects)
+                    {
+                        <li>@subject.Subject?.Name (@subject.Subject?.Code)</li>
+                    }
+                </ul>
+            </td>
+            <td>@application.Status</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<a asp-action="Apply" class="btn btn-primary">Apply for Another Semester</a>

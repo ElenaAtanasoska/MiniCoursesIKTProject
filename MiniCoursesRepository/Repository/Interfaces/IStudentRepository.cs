@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MiniCoursesDomain;
-using MiniCoursesDomain.Identity;
+﻿using MiniCoursesDomain.Identity;
 
 namespace MiniCoursesRepository.Repository.Interfaces
 {
@@ -16,5 +10,4 @@ namespace MiniCoursesRepository.Repository.Interfaces
         Task UpdateAsync(User user);
         Task DeleteAsync(string id);
     }
-
 }

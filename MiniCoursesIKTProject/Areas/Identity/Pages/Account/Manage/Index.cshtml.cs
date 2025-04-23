@@ -4,11 +4,13 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using MiniCoursesDomain.Identity;
 
 namespace MiniCoursesIKTProject.Areas.Identity.Pages.Account.Manage
@@ -31,6 +33,10 @@ namespace MiniCoursesIKTProject.Areas.Identity.Pages.Account.Manage
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         public string Username { get; set; }
+        public string FullName { get; set; }
+        public string Email { get; set; }
+        public string Indeks { get; set; }
+        public string Role { get; set; }
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -65,8 +71,13 @@ namespace MiniCoursesIKTProject.Areas.Identity.Pages.Account.Manage
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            var roles = await _userManager.GetRolesAsync(user);
 
             Username = userName;
+            FullName = $"{user.Name} {user.LastName}";
+            Email = user.Email;
+            Indeks = user.Indeks;
+            Role = roles.FirstOrDefault() ?? "Student";
 
             Input = new InputModel
             {

@@ -1,0 +1,70 @@
+@model MiniCourses.Controllers.SemesterApplicationViewModel
+
+@{
+    ViewData["Title"] = "Apply for Semester";
+}
+
+<h1>Apply for Semester</h1>
+
+<form asp-action="Apply" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="Semester" class="control-label"></label>
+        <select asp-for="Semester" class="form-control" asp-items="Html.GetEnumSelectList<MiniCoursesDomain.Enums.Semester>()">
+            <option value="">Select Semester</option>
+        </select>
+        <span asp-validation-for="Semester" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="SemesterType" class="control-label"></label>
+        <select asp-for="SemesterType" class="form-control" asp-items="Html.GetEnumSelectList<MiniCoursesDomain.Enums.SemesterType>()" onchange="loadSubjects()">
+            <option value="">Select Semester Type</option>
+        </select>
+        <span asp-validation-for="SemesterType" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Year" class="control-label"></label>
+        <input asp-for="Year" class="form-control" />
+        <span asp-validation-for="Year" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="SelectedSubjectIds" class="control-label">Subjects (select 3–6)</label>
+        <select asp-for="SelectedSubjectIds" class="form-control" multiple size="10" asp-items="@Model.AvailableSubjects">
+            <option value="">Select Subjects</option>
+        </select>
+        <span asp-validation-for="SelectedSubjectIds" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Apply" class="btn btn-primary" />
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        async function loadSubjects() {
+            const semesterType = document.getElementById('SemesterType').value;
+            const subjectSelect = document.getElementById('SelectedSubjectIds');
+            subjectSelect.innerHTML = '<option value="">Loading...</option>';
+
+            if (semesterType) {
+                const response = await fetch(`/Semester/GetSubjects?semesterType=${semesterType}`);
+                const subjects = await response.json();
+                subjectSelect.innerHTML = '<option value="">Select Subjects</option>';
+                subjects.forEach(subject => {
+                    const option = document.createElement('option');
+                    option.value = subject.id;
+                    option.text = `${subject.name} (${subject.code})`;
+                    subjectSelect.appendChild(option);
+                });
+            } else {
+                subjectSelect.innerHTML = '<option value="">Select Subjects</option>';
+            }
+        }
+    </script>
+}

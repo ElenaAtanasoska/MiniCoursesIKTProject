@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MiniCoursesRepository;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MiniCoursesRepository.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250423131427_AddSemesterApplication")]
+    partial class AddSemesterApplication
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -251,9 +254,6 @@ namespace MiniCoursesRepository.Migrations
                     b.Property<int>("RequestStatus")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("SemesterApplicationId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("SubjectId")
                         .HasColumnType("uuid");
 
@@ -261,8 +261,6 @@ namespace MiniCoursesRepository.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("SemesterApplicationId");
 
                     b.HasIndex("SubjectId");
 
@@ -466,10 +464,6 @@ namespace MiniCoursesRepository.Migrations
 
             modelBuilder.Entity("MiniCoursesDomain.Entities.StudentSubject", b =>
                 {
-                    b.HasOne("MiniCoursesDomain.Entities.SemesterApplication", null)
-                        .WithMany("Subjects")
-                        .HasForeignKey("SemesterApplicationId");
-
                     b.HasOne("MiniCoursesDomain.Entities.Subject", "Subject")
                         .WithMany()
                         .HasForeignKey("SubjectId")
@@ -497,11 +491,6 @@ namespace MiniCoursesRepository.Migrations
             modelBuilder.Entity("MiniCoursesDomain.Entities.Homework", b =>
                 {
                     b.Navigation("Files");
-                });
-
-            modelBuilder.Entity("MiniCoursesDomain.Entities.SemesterApplication", b =>
-                {
-                    b.Navigation("Subjects");
                 });
 
             modelBuilder.Entity("MiniCoursesDomain.Identity.User", b =>
