@@ -1,26 +1,47 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MiniCoursesDomain;
 using MiniCoursesDomain.Entities;
 using MiniCoursesDomain.Enums;
 using MiniCoursesDomain.Identity;
+using MiniCoursesRepository;
 
 namespace MiniCoursesIKTProject.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly ApplicationDbContext _context;
+    private readonly UserManager<User> _userManager;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ApplicationDbContext context, UserManager<User> userManager)
     {
-        _logger = logger;
+        _context = context;
+        _userManager = userManager;
     }
 
     public IActionResult Index()
     {
         return View();
     }
+    public async Task<IActionResult> Index1()
+    {
+        var user = await _userManager.GetUserAsync(User);
 
+        var applications = await _context.SemesterApplications
+            .Where(sa => sa.StudentId == user.Id && sa.Status == SubjectRequestStatus.Accepted)
+            .Include(sa => sa.Subjects)
+                .ThenInclude(ss => ss.Subject)
+            .ToListAsync();
+
+        var subjects = applications
+            .SelectMany(sa => sa.Subjects)
+            .Where(ss => ss.Subject != null)
+            .ToList();
+
+        return View(subjects);
+    }
     public IActionResult Privacy()
     {
         return View();

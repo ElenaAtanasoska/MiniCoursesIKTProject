@@ -14,12 +14,12 @@ namespace MiniCourses.Controllers
 {
     public class SemesterController : Controller
     {
-        private readonly IStudentRepository _studentRepository;
+        private readonly IUserRepository _userRepository;
         private readonly ISubjectRepository _subjectRepository;
 
-        public SemesterController(IStudentRepository studentRepository, ISubjectRepository subjectRepository)
+        public SemesterController(IUserRepository userRepository, ISubjectRepository subjectRepository)
         {
-            _studentRepository = studentRepository;
+            _userRepository = userRepository;
             _subjectRepository = subjectRepository;
         }
 
@@ -77,7 +77,7 @@ namespace MiniCourses.Controllers
                 }).ToList()
             };
 
-            var user = await _studentRepository.GetByIdAsync(studentId);
+            var user = await _userRepository.GetByIdAsync(studentId);
             if (user == null)
             {
                 ModelState.AddModelError("", "Student not found.");
@@ -85,7 +85,7 @@ namespace MiniCourses.Controllers
             }
 
             user.SemesterApplications.Add(application);
-            await _studentRepository.UpdateAsync(user);
+            await _userRepository.UpdateAsync(user);
 
             return RedirectToAction("ApplicationStatus");
         }
@@ -114,7 +114,7 @@ namespace MiniCourses.Controllers
                 return Unauthorized("User is not logged in.");
             }
 
-            var user = await _studentRepository.GetByIdAsync(studentId);
+            var user = await _userRepository.GetByIdAsync(studentId);
             if (user == null)
             {
                 return NotFound();
@@ -128,7 +128,7 @@ namespace MiniCourses.Controllers
         [HttpGet]
         public async Task<IActionResult> ManageApplications()
         {
-            var users = await _studentRepository.GetAllAsync();
+            var users = await _userRepository.GetAllAsync();
             var pendingApplications = users
                 .SelectMany(u => u.SemesterApplications)
                 .Where(a => a.Status == SubjectRequestStatus.Pending)
@@ -141,7 +141,7 @@ namespace MiniCourses.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AcceptApplication(Guid id)
         {
-            var users = await _studentRepository.GetAllAsync();
+            var users = await _userRepository.GetAllAsync();
             var application = users
                 .SelectMany(u => u.SemesterApplications)
                 .FirstOrDefault(a => a.Id == id);
@@ -160,7 +160,7 @@ namespace MiniCourses.Controllers
             var user = users.FirstOrDefault(u => u.SemesterApplications.Contains(application));
             if (user != null)
             {
-                await _studentRepository.UpdateAsync(user);
+                await _userRepository.UpdateAsync(user);
             }
 
             return RedirectToAction("ManageApplications");
@@ -171,7 +171,7 @@ namespace MiniCourses.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RejectApplication(Guid id)
         {
-            var users = await _studentRepository.GetAllAsync();
+            var users = await _userRepository.GetAllAsync();
             var application = users
                 .SelectMany(u => u.SemesterApplications)
                 .FirstOrDefault(a => a.Id == id);
@@ -190,7 +190,7 @@ namespace MiniCourses.Controllers
             var user = users.FirstOrDefault(u => u.SemesterApplications.Contains(application));
             if (user != null)
             {
-                await _studentRepository.UpdateAsync(user);
+                await _userRepository.UpdateAsync(user);
             }
 
             return RedirectToAction("ManageApplications");

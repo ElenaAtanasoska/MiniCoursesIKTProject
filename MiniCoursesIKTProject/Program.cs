@@ -29,12 +29,12 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
 builder.Services.AddControllersWithViews();
 
 
-builder.Services.AddScoped(typeof(IStudentRepository), typeof(StudentRepository));
+builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
 builder.Services.AddScoped<IFIleRepository, FIleRepository>();
 builder.Services.AddScoped<IHomeworkRepository, HomeworkRepository>();
 builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();
 
-builder.Services.AddTransient<IStudentService, StudentService>();
+builder.Services.AddTransient<IUserService, UserService>();
 
 var app = builder.Build();
 

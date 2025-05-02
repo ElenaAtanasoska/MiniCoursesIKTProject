@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MiniCoursesRepository;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MiniCoursesRepository.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250428123742_fixes")]
+    partial class fixes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -199,9 +202,6 @@ namespace MiniCoursesRepository.Migrations
                     b.Property<string>("ProfessorId")
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("SubjectId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
@@ -209,8 +209,6 @@ namespace MiniCoursesRepository.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ProfessorId");
-
-                    b.HasIndex("SubjectId");
 
                     b.ToTable("Homeworks");
                 });
@@ -455,10 +453,6 @@ namespace MiniCoursesRepository.Migrations
                         .WithMany()
                         .HasForeignKey("ProfessorId");
 
-                    b.HasOne("MiniCoursesDomain.Entities.Subject", null)
-                        .WithMany("Homework")
-                        .HasForeignKey("SubjectId");
-
                     b.Navigation("Professor");
                 });
 
@@ -511,11 +505,6 @@ namespace MiniCoursesRepository.Migrations
             modelBuilder.Entity("MiniCoursesDomain.Entities.SemesterApplication", b =>
                 {
                     b.Navigation("Subjects");
-                });
-
-            modelBuilder.Entity("MiniCoursesDomain.Entities.Subject", b =>
-                {
-                    b.Navigation("Homework");
                 });
 
             modelBuilder.Entity("MiniCoursesDomain.Identity.User", b =>

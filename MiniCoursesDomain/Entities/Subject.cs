@@ -25,4 +25,5 @@
 
             [Range(2000, 2100)]
             public int Year { get; set; }
-        }
+            public List<Homework> Homework { get; set; } = new List<Homework>();
+}

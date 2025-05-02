@@ -1,0 +1,28 @@
+﻿@model MiniCoursesDomain.Entities.Subject
+
+<h1>Homework for @Model.Name</h1>
+
+@if (Model.Homework != null && Model.Homework.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Homework Title</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var homework in Model.Homework)
+            {
+                <tr>
+                    <td>@homework.Title</td>
+                    <td>@homework.Description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No homework assigned for this subject yet.</p>
+}

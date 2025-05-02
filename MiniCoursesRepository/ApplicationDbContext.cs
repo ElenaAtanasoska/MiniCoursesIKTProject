@@ -16,7 +16,7 @@ public class ApplicationDbContext : IdentityDbContext<User>
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<Subject>()
-            .ToTable("Subjects")
+            .ToTable("Subject")
             .HasOne(s => s.Professor)
             .WithMany()
             .HasForeignKey(s => s.ProfessorId);
