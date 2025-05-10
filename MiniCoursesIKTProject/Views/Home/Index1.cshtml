@@ -2,9 +2,15 @@
 
 @{
     ViewData["Title"] = "Your Subjects";
+    var searchQuery = Context.Request.Query["searchQuery"].ToString();
 }
 
 <h1>Your Subjects</h1>
+
+<form method="get" asp-action="Index1" class="mb-3">
+    <input type="text" name="searchQuery" class="form-control" placeholder="Search by subject name" value="@searchQuery" />
+    <button type="submit" class="btn btn-primary mt-2">Search</button>
+</form>
 
 @if (Model != null && Model.Any())
 {

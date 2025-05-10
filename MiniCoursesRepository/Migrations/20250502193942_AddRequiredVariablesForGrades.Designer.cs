@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MiniCoursesRepository;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MiniCoursesRepository.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250502193942_AddRequiredVariablesForGrades")]
+    partial class AddRequiredVariablesForGrades
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -164,30 +167,22 @@ namespace MiniCoursesRepository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("DateUploaded")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("FileName")
+                    b.Property<byte[]>("File")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("bytea");
 
-                    b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<double>("Grade")
+                        .HasColumnType("double precision");
 
-                    b.Property<int?>("Grade")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("HomeworkId")
+                    b.Property<Guid>("HomeWorkId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("HomeworkId");
+                    b.HasIndex("HomeWorkId");
 
                     b.HasIndex("UserId");
 
@@ -200,12 +195,11 @@ namespace MiniCoursesRepository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("CreatedById")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
+                    b.Property<string>("ProfessorId")
                         .HasColumnType("text");
 
                     b.Property<Guid>("SubjectId")
@@ -217,7 +211,7 @@ namespace MiniCoursesRepository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedById");
+                    b.HasIndex("ProfessorId");
 
                     b.HasIndex("SubjectId");
 
@@ -447,28 +441,22 @@ namespace MiniCoursesRepository.Migrations
                 {
                     b.HasOne("MiniCoursesDomain.Entities.Homework", "Homework")
                         .WithMany("Files")
-                        .HasForeignKey("HomeworkId")
+                        .HasForeignKey("HomeWorkId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MiniCoursesDomain.Identity.User", "User")
+                    b.HasOne("MiniCoursesDomain.Identity.User", null)
                         .WithMany("GradedFiles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Homework");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MiniCoursesDomain.Entities.Homework", b =>
                 {
-                    b.HasOne("MiniCoursesDomain.Identity.User", "CreatedBy")
+                    b.HasOne("MiniCoursesDomain.Identity.User", "Professor")
                         .WithMany()
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProfessorId");
 
                     b.HasOne("MiniCoursesDomain.Entities.Subject", "Subject")
                         .WithMany("Homework")
@@ -476,7 +464,7 @@ namespace MiniCoursesRepository.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CreatedBy");
+                    b.Navigation("Professor");
 
                     b.Navigation("Subject");
                 });

@@ -80,7 +80,7 @@
         <div class="form-group col-md-6">
             <label asp-for="SemesterType" class="control-label">Select the Semester Type (Winter or Summer)</label>
             <select asp-for="SemesterType" class="form-control" asp-items="Html.GetEnumSelectList<MiniCoursesDomain.Enums.SemesterType>()" onchange="loadSubjects()">
-                <option value="">Select Semester Type</option>
+                <option disabled value="">Select Semester Type</option>
             </select>
             <span asp-validation-for="SemesterType" class="text-danger"></span>
         </div>
@@ -95,7 +95,7 @@
     <div class="form-group">
             <label for="SelectedSubjectIds" class="control-label">Select 3 to 6 subjects you want to enroll in</label>
         <select asp-for="SelectedSubjectIds" class="form-control" multiple size="10" asp-items="@Model.AvailableSubjects">
-            <option value="">Select Subjects</option>
+            <option disabled value="">Select Subjects</option>
         </select>
         <span asp-validation-for="SelectedSubjectIds" class="text-danger"></span>
     </div>
@@ -116,7 +116,7 @@
             if (semesterType) {
                 const response = await fetch(`/Semester/GetSubjects?semesterType=${semesterType}`);
                 const subjects = await response.json();
-                subjectSelect.innerHTML = '<option value="">Select Subjects</option>';
+                subjectSelect.innerHTML = '<option disabled value="">Select Subjects</option>';
                 subjects.forEach(subject => {
                     const option = document.createElement('option');
                     option.value = subject.id;

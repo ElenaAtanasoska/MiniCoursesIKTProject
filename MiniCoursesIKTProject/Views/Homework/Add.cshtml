@@ -1,0 +1,34 @@
+﻿@model MiniCoursesDomain.DTO.ViewModels.AddHomeworkViewModel
+
+@{
+    ViewData["Title"] = "Add Homework";
+}
+
+<h1>Add Homework</h1>
+
+<form asp-action="Add" method="post">
+    <div class="form-group">
+        <label asp-for="Title" class="control-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Description" class="control-label"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="SubjectId" class="control-label"></label>
+        <select asp-for="SubjectId" class="form-control" asp-items="@(new SelectList(Model.Subjects, "Id", "Name"))">
+            <option value="">Select a subject</option>
+        </select>
+        <span asp-validation-for="SubjectId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

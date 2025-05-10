@@ -5,17 +5,32 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <a asp-controller="Users" asp-action="Create" class="btn btn-primary">Add user</a>
 
-    <form method="get" style="width: 250px;">
-        <div class="form-group w-100 mb-0">
+    <form method="get" class="d-flex gap-2 align-items-center" style="width: 500px;">
+        <div class="form-group mb-0 w-50">
             <select id="roleFilter" name="selectedRole" class="form-control form-control-sm" onchange="this.form.submit()">
-                <option value="">All Users</option>
-                @foreach (var role in ViewBag.Roles)
+                <option value="">All Roles</option>
+                @foreach (var role in ViewBag.Roles as List<string>)
                 {
-                    <option value="@role" selected="@(ViewBag.SelectedRole == role ? "selected" : null)">@role</option>
+                    <option value="@role" selected="@(ViewBag.SelectedRole == role ? "selected" : null)">
+                        @role
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group mb-0 w-50">
+            <select id="subjectFilter" name="subjectId" class="form-control form-control-sm" onchange="this.form.submit()">
+                <option value="">All Subjects</option>
+                @foreach (var subject in ViewBag.Subjects as List<MiniCoursesDomain.Entities.Subject>)
+                {
+                    <option value="@subject.Id" selected="@(ViewBag.SubjectId?.ToString() == subject.Id.ToString() ? "selected" : null)">
+                        @subject.Name
+                    </option>
                 }
             </select>
         </div>
     </form>
+
 
 </div>
 
@@ -32,17 +47,17 @@
                     </svg>
                     <div class="ms-4">
                         <h6 class="mb-0">@user.Key.Name @user.Key.LastName | @(string.Join(", ", user.Value))</h6>
-                        <small class="text-muted">@user.Key.UserName | Indeks: @user.Key.Indeks</small>
+                        <small class="text-muted">
+                            @user.Key.UserName
+                            @if (user.Value.Contains("Student"))
+                            {
+                                <text> | Indeks: @user.Key.Indeks</text>
+                            }
+                        </small>
                     </div>
                 </div>
 
                 <div>
-                    @if (user.Value.Contains("Student"))
-                    {
-                        <span>
-                            <a asp-action="Grades" asp-route-id="@user.Key.Id">Grades</a> |
-                        </span> 
-                    }
                     <a asp-action="Edit" asp-route-id="@user.Key.Id">Edit</a> |
                     <a asp-action="Delete" asp-route-id="@user.Key.Id">Delete</a>
                 </div>

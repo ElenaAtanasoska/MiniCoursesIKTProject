@@ -9,6 +9,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="GemBox.Document" Version="2025.4.107" />
+        <PackageReference Include="itext7" Version="8.0.5" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.3" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.11" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.11" />
@@ -32,6 +34,12 @@
         <Content Include="..\.dockerignore">
             <Link>.dockerignore</Link>
         </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\uploads\a987ce8d-f48d-47a7-af51-24bafed77599_Домашна 3 - 211177.pdf" />
+      <_ContentIncludedByDefault Remove="wwwroot\uploads\c1eb01ae-3f1c-44a1-89d5-ab800c2a7d8c_Домашна 3 - 211177.pdf" />
+      <_ContentIncludedByDefault Remove="wwwroot\uploads\faf6564f-e098-40b0-b0f7-e8a3d5c24399_Домашна 3 - 211177.pdf" />
     </ItemGroup>
 
 </Project>

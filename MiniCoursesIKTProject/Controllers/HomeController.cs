@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +26,8 @@ public class HomeController : Controller
     {
         return View();
     }
-    public async Task<IActionResult> Index1()
+    [Authorize]
+    public async Task<IActionResult> Index1(string? searchQuery)
     {
         var user = await _userManager.GetUserAsync(User);
 
@@ -40,13 +42,15 @@ public class HomeController : Controller
             .Where(ss => ss.Subject != null)
             .ToList();
 
+        if (!string.IsNullOrWhiteSpace(searchQuery))
+        {
+            subjects = subjects
+                .Where(ss => ss.Subject.Name.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+
         return View(subjects);
     }
-    public IActionResult Privacy()
-    {
-        return View();
-    }
-
     public IActionResult Users()
     {
         var users = new List<User>

@@ -160,6 +160,19 @@ namespace MiniCourses.Controllers
             var user = users.FirstOrDefault(u => u.SemesterApplications.Contains(application));
             if (user != null)
             {
+                foreach (var subject in application.Subjects)
+                {
+                    if (!user.SubjectsGrades.Any(s => s.SubjectId == subject.SubjectId))
+                    {
+                        user.SubjectsGrades.Add(new StudentSubject
+                        {
+                            SubjectId = subject.SubjectId,
+                            Subject = subject.Subject,
+                            Grade = null,
+                            RequestStatus = SubjectRequestStatus.Accepted
+                        });
+                    }
+                }
                 await _userRepository.UpdateAsync(user);
             }
 
@@ -202,7 +215,7 @@ namespace MiniCourses.Controllers
         public Semester Semester { get; set; }
         public SemesterType SemesterType { get; set; }
         public int Year { get; set; }
-        public List<string> SelectedSubjectIds { get; set; } = [];
-        public List<SelectListItem> AvailableSubjects { get; set; } = [];
+        public List<string> SelectedSubjectIds { get; set; } = new List<string>();
+        public List<SelectListItem> AvailableSubjects { get; set; } = new List<SelectListItem>();
     }
 }

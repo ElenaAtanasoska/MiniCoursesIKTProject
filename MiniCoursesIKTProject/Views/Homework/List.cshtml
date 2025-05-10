@@ -1,0 +1,41 @@
+﻿@model List<MiniCoursesDomain.DTO.ViewModels.HomeworkListViewModel>
+
+@{
+    ViewData["Title"] = "Homework List";
+    var subjectId = ViewBag.SubjectId as Guid?;
+}
+
+<h1>Homework List</h1>
+
+@if (subjectId.HasValue)
+{
+    <p>
+        <a asp-controller="Subject" asp-action="Index" class="btn btn-secondary">Back to Subjects</a>
+    </p>
+}
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Subject</th>
+        <th>Created By</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Title</td>
+            <td>@item.SubjectName</td>
+            <td>@item.CreatedByName</td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary btn-sm">Details</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+<a asp-action="Add" asp-route-subjectId="@subjectId" class="btn btn-primary">Add New Homework</a>

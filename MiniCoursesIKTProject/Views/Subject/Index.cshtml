@@ -30,11 +30,12 @@
         <th>
             @Html.DisplayNameFor(model => model.Year)
         </th>
-        <th></th>
+        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model) {
+    @foreach (var item in Model)
+    {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Code)
@@ -58,6 +59,8 @@
                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
                 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
                 <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                <a asp-controller="Homework" asp-action="List" asp-route-subjectId="@item.Id" class="btn btn-sm btn-primary">List Homeworks</a>
+                <a asp-controller="Homework" asp-action="Add" asp-route-subjectId="@item.Id" class="btn btn-sm btn-success">Add Homework</a>
             </td>
         </tr>
     }

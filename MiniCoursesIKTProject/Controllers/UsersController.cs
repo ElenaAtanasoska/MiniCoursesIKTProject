@@ -5,6 +5,8 @@ using MiniCoursesDomain.DTO;
 using MiniCoursesService.Implementation;
 using Microsoft.AspNetCore.Identity;
 using Azure.Identity;
+using MiniCoursesRepository.Repository.Interfaces;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MiniCoursesIKTProject.Controllers
 {
@@ -12,37 +14,42 @@ namespace MiniCoursesIKTProject.Controllers
     public class UsersController : Controller
     {
         private readonly IUserService _userService;
+        private readonly ISubjectRepository _subjectRepository;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<User> _userManager;
 
-        public UsersController(IUserService studentService, RoleManager<IdentityRole> roleManager)
+        public UsersController(IUserService studentService, RoleManager<IdentityRole> roleManager, 
+            ISubjectRepository subjectRepository, UserManager<User> userManager)
         {
             _userService = studentService;
             _roleManager = roleManager;
+            _subjectRepository = subjectRepository;
+            _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(string selectedRole = null)
+        public async Task<IActionResult> Index(string selectedRole = "Student,Professor", Guid? subjectId = null)
         {
-            var roles = _roleManager.Roles.Select(r => r.Name).ToList();
+            var roles = new List<string> { "Student", "Professor" };
 
-            var usersWithRoles = await _userService.GetUsersByRoleAsync(selectedRole);
+            List<string> selectedRoles = string.IsNullOrEmpty(selectedRole)
+                ? roles
+                : selectedRole.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(r => r.Trim()).ToList();
+
+            var usersWithRoles = await _userService.FilterUsersByRoleAndSubject(selectedRoles, subjectId);
+
+            var subjects = await _subjectRepository.GetAllAsync();
 
             ViewBag.SelectedRole = selectedRole;
             ViewBag.Roles = roles;
+            ViewBag.SubjectId = subjectId;
+            ViewBag.Subjects = subjects;
             return View(usersWithRoles);
         }
 
         [HttpGet]
         public IActionResult Create()
         {
-            var roleNames = _roleManager.Roles.Select(r => r.Name).ToList();
-
-            var roles = roleNames
-                .Select(role => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
-                {
-                    Value = role,
-                    Text = role
-                })
-                .ToList();
+            var roles = GetRolesSelectList();
 
             ViewBag.Roles = roles;
             return View();
@@ -51,6 +58,14 @@ namespace MiniCoursesIKTProject.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(UserCreateDto dto)
         {
+            var existingUser = await _userManager.FindByEmailAsync(dto.Email);
+            if (existingUser != null)
+            {
+                ModelState.AddModelError("Email", "A user with this email already exists.");
+                ViewBag.Roles = GetRolesSelectList();
+                return View(dto);
+            }
+
             var user = new User
             {
                 UserName = dto.Email,
@@ -64,15 +79,18 @@ namespace MiniCoursesIKTProject.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Grades(string id)
+        private List<SelectListItem> GetRolesSelectList()
         {
-            var user = await _userService.GetUserWithRolesByIdAsync(id);
-            if (user == null)
-                return NotFound();
+            var roleNames = _roleManager.Roles
+                .Where(r => r.Name == "Editor" || r.Name == "Professor" || r.Name == "Student")
+                .Select(r => r.Name)
+                .ToList();
 
-            //TODO - Add service method for listing subjects for student
-            return View();
+            return roleNames.Select(role => new SelectListItem
+            {
+                Value = role,
+                Text = role
+            }).ToList();
         }
 
         [HttpGet]

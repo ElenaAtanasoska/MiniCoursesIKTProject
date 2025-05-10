@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using MiniCoursesDomain.Entities;
 using MiniCoursesDomain.Enums;
 using MiniCoursesDomain.Identity;
+using MiniCoursesRepository;
 using MiniCoursesRepository.Repository.Interfaces;
 
 namespace MiniCoursesIKTProject.Controllers
@@ -15,17 +16,44 @@ namespace MiniCoursesIKTProject.Controllers
     {
         private readonly ISubjectRepository _subjectRepository;
         private readonly UserManager<User> _userManager;
+        private readonly ApplicationDbContext _context;
 
-        public SubjectController(ISubjectRepository subjectRepository, UserManager<User> userManager)
+        public SubjectController(
+            ISubjectRepository subjectRepository,
+            UserManager<User> userManager,
+            ApplicationDbContext context)
         {
             _subjectRepository = subjectRepository;
             _userManager = userManager;
+            _context = context;
         }
 
         // GET: Subject
         public async Task<IActionResult> Index()
         {
-            var subjects = await _subjectRepository.GetAllAsync();
+            var user = await _context.Users
+                .Include(u => u.SubjectsGrades)
+                .FirstOrDefaultAsync(u => u.Id == _userManager.GetUserId(User));
+            
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            IEnumerable<Subject> subjects;
+            if (await _userManager.IsInRoleAsync(user, "Student"))
+            {
+                var enrolledSubjectIds = user.SubjectsGrades
+                    .Select(sg => sg.SubjectId)
+                    .ToList();
+                subjects = await _subjectRepository.GetAllAsync();
+                subjects = subjects.Where(s => enrolledSubjectIds.Contains(s.Id)).ToList();
+            }
+            else
+            {
+                subjects = await _subjectRepository.GetAllAsync();
+            }
+
             return View(subjects);
         }
 
@@ -175,8 +203,8 @@ namespace MiniCoursesIKTProject.Controllers
             var professorList = professors.OrderBy(p => p.LastName)
                 .Select(p => new 
                 { 
-                    Id = p.Id.ToString(), 
-                    Name = p.Name 
+                    Id = p.Id, 
+                    Name = $"{p.Name} {p.LastName}"
                 }).ToList();
     
             ViewBag.ProfessorId = new SelectList(professorList, "Id", "Name", selectedProfessor);

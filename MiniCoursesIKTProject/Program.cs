@@ -33,6 +33,7 @@ builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
 builder.Services.AddScoped<IFIleRepository, FIleRepository>();
 builder.Services.AddScoped<IHomeworkRepository, HomeworkRepository>();
 builder.Services.AddScoped<ISubjectRepository, SubjectRepository>();
+builder.Services.AddScoped<IGradedFileRepository, GradedFileRepository>();
 
 builder.Services.AddTransient<IUserService, UserService>();
 

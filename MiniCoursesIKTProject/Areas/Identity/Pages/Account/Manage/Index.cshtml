@@ -1,5 +1,5 @@
 ﻿@page
-@model IndexModel
+@model MiniCoursesIKTProject.Areas.Identity.Pages.Account.Manage.IndexModel
 @{
     ViewData["Title"] = "Profile";
     ViewData["ActivePage"] = ManageNavPages.Index;
@@ -9,7 +9,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
 
 <div class="container mt-4">
-        <div class="card p-4 shadow-sm rounded-4 bg-light mb-4">
+    <div class="card p-4 shadow-sm rounded-4 bg-light mb-4">
         <div class="row align-items-center">
             <div class="col-md-2 text-center">
                 <i class="bi bi-person-circle" style="font-size: 4rem; color: #5e3ea1;"></i>
@@ -27,28 +27,79 @@
 
     <div class="card p-4 shadow-sm rounded-4 bg-light">
         <h5 class="mb-3">Subjects & Grades</h5>
+        <a asp-page-handler="ExportStudentGrades" class="btn btn-primary" target="_blank">
+            Export Grades
+        </a>
         <div style="max-height: 250px; overflow-y: auto;">
             <table class="table table-borderless">
                 <thead class="fw-bold">
-                    <tr>
-                        <th>Subject name</th>
-                        <th style="width: 100px;">Grade</th>
-                    </tr>
+                <tr>
+                    <th>Subject name</th>
+                    <th>Year</th>
+                    <th style="width: 100px;">Grade</th>
+                </tr>
                 </thead>
                 <tbody>
-                    @for (int i = 0; i < 4; i++)
+
+                @if (Model.SubjectsGrades.Any())
+                {
+                    @foreach (var subject in Model.SubjectsGrades)
                     {
                         <tr>
-                            <td>Subject name</td>
+                            <td>@subject.Subject?.Name</td>
+                            <td>@subject.Subject?.Year</td>
                             <td>
                                 <div class="bg-white text-center rounded-3 shadow-sm" style="width: 60px;">
-                                    10
+                                    @(subject.Grade?.ToString() ?? "Not graded")
                                 </div>
                             </td>
                         </tr>
                     }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="2" class="text-center">No enrolled subjects.</td>
+                    </tr>
+                }
                 </tbody>
             </table>
         </div>
+          <h5 class="mb-3">Homeworks</h5>
+        <div style="max-height: 250px; overflow-y: auto;">
+                    <table class="table table-borderless">
+                        <thead class="fw-bold">
+                            <tr>
+                                <th>Subject name</th>
+                                <th>Homework</th>
+                                <th style="width: 100px;">Grade</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+        
+                            @if (Model.GradedFiles.Any())
+                            {
+                                @foreach (var file in Model.GradedFiles)
+                                {
+                                    <tr>
+                                        <td>@file.Homework.Subject.Name</td>
+                                        <td>@file.Homework.Title</td>
+                                        <td>
+                                            <div class="bg-white text-center rounded-3 shadow-sm" style="width: 60px;">
+                                                @(file.Grade?.ToString() ?? "Not graded")
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="2" class="text-center">No uploaded homeworks yet</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
     </div>
 </div>
