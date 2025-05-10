@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +16,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using MiniCoursesDomain.Identity;
 
 namespace MiniCoursesIKTProject.Areas.Identity.Pages.Account;
-
+[Authorize(Roles = "Admin")]
 public class RegisterModel : PageModel
 {
     private readonly IEmailSender _emailSender;

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Azure.Identity;
 using MiniCoursesRepository.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MiniCoursesIKTProject.Controllers
 {
@@ -47,6 +48,7 @@ namespace MiniCoursesIKTProject.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin,Editor")]
         public IActionResult Create()
         {
             var roles = GetRolesSelectList();
@@ -56,6 +58,7 @@ namespace MiniCoursesIKTProject.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Editor")]
         public async Task<IActionResult> Create(UserCreateDto dto)
         {
             var existingUser = await _userManager.FindByEmailAsync(dto.Email);
@@ -94,6 +97,7 @@ namespace MiniCoursesIKTProject.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin,Editor")]
         public async Task<IActionResult> Edit(string id)
         {
             var user = await _userService.GetUserWithRolesByIdAsync(id);
@@ -118,6 +122,7 @@ namespace MiniCoursesIKTProject.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Editor")]
         public async Task<IActionResult> Edit(UserEditDto dto)
         {
             Console.WriteLine("Here");
@@ -139,6 +144,7 @@ namespace MiniCoursesIKTProject.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin,Editor")]
         public async Task<IActionResult> Delete(string id)
         {
             var user = await _userService.GetByIdAsync(id);
@@ -149,6 +155,7 @@ namespace MiniCoursesIKTProject.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin,Editor")]
         public async Task<IActionResult> ConfirmDelete(string id)
         {
             await _userService.DeleteAsync(id);

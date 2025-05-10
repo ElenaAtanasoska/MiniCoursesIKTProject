@@ -9,6 +9,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MiniCourses.Controllers
 {
@@ -24,6 +25,7 @@ namespace MiniCourses.Controllers
         }
 
         // GET: Semester/Apply
+        [Authorize(Roles = "Student")]
         [HttpGet]
         public IActionResult Apply()
         {
@@ -37,6 +39,7 @@ namespace MiniCourses.Controllers
 
         // POST: Semester/Apply
         [HttpPost]
+        [Authorize(Roles = "Student")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Apply(SemesterApplicationViewModel model)
         {
@@ -106,6 +109,7 @@ namespace MiniCourses.Controllers
 
         // GET: Semester/ApplicationStatus
         [HttpGet]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> ApplicationStatus()
         {
             var studentId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -126,6 +130,7 @@ namespace MiniCourses.Controllers
 
         // GET: Semester/ManageApplications
         [HttpGet]
+        [Authorize(Roles = "Admin,Editor")]
         public async Task<IActionResult> ManageApplications()
         {
             var users = await _userRepository.GetAllAsync();
@@ -138,6 +143,7 @@ namespace MiniCourses.Controllers
 
         // POST: Semester/AcceptApplication
         [HttpPost]
+        [Authorize(Roles = "Admin,Editor")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AcceptApplication(Guid id)
         {
@@ -181,6 +187,7 @@ namespace MiniCourses.Controllers
 
         // POST: Semester/RejectApplication
         [HttpPost]
+        [Authorize(Roles = "Admin,Editor")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RejectApplication(Guid id)
         {
