@@ -1,8 +1,66 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<MiniCoursesDomain.Entities.StudentSubject>
+
+@{
+    ViewData["Title"] = "All Subjects";
+    var searchQuery = Context.Request.Query["searchQuery"].ToString();
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .winter-row {
+            background-color: #b3e0ff;
+        }
+
+        .summer-row {
+            background-color: lightcoral;
+        }
+
+        .search-bar-container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+    </style>
+}
+
+<h1 class="text-center">All Subjects</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<div class="search-bar-container mb-3">
+    <form method="get" asp-action="Index1" class="form-inline d-flex flex-column">
+        <input type="text" name="searchQuery" class="form-control mb-2 w-100" placeholder="Search by subject name" value="@searchQuery" />
+        <button type="submit" class="btn btn-primary w-100">Search</button>
+    </form>
 </div>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Code</th>
+            <th>Semester Type</th>
+            <th>Year</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="@((item.Subject.SemesterType == MiniCoursesDomain.Enums.SemesterType.Winter) ? "winter-row" : "summer-row")">
+                <td>@item.Subject.Name</td>
+                <td>@item.Subject.Code</td>
+                <td>@item.Subject.SemesterType</td>
+                <td>@item.Subject.Year</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info text-center">
+        There are no subjects in your semester.
+    </div>
+}

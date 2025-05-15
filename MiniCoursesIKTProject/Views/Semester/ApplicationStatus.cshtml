@@ -4,110 +4,119 @@
     ViewData["Title"] = "Semester Application Status";
 }
 
-@section Styles {
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <style>
-        .card-custom {
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            padding: 20px;
-        }
+@if (User.IsInRole("Student"))
+{
 
-        table {
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        th {
-            background-color: #0d143e !important; 
-            color: white !important; 
-            text-align: center;
-        }
-
-        td {
-            text-align: center;
-        }
-
-        .btn-custom {
-            background-color: #0d143e;
-            color: white;
-            font-weight: bold;
-            padding: 12px 30px;
-            border-radius: 50px;
-            transition: background-color 0.3s ease;
-        }
-
-            .btn-custom:hover {
-                background-color: #0d143e;
+    @section Styles {
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <style>
+            .card-custom {
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                border-radius: 8px;
+                padding: 20px;
             }
 
-        .list-group-item {
-            border: none;
-            background-color: transparent;
-            padding: 5px 0;
-        }
+            table {
+                border-radius: 8px;
+                overflow: hidden;
+            }
 
-        .hidden-subjects {
-            display: none;
-        }
+            th {
+                background-color: #0d4a83 !important;
+                color: white !important;
+                text-align: center;
+            }
 
-        .toggle-view {
-            color: #0d143e;
-            font-weight: bold;
-            cursor: pointer;
-        }
-    </style>
+            td {
+                text-align: center;
+            }
+
+            .btn-custom {
+                background-color: #0d4a83;
+                color: white;
+                font-weight: bold;
+                padding: 12px 30px;
+                border-radius: 50px;
+                transition: background-color 0.3s ease;
+            }
+
+                .btn-custom:hover {
+                    background-color: #0d4a83;
+                }
+
+            .list-group-item {
+                border: none;
+                background-color: transparent;
+                padding: 5px 0;
+            }
+
+            .hidden-subjects {
+                display: none;
+            }
+
+            .toggle-view {
+                color: #0d4a83;
+                font-weight: bold;
+                cursor: pointer;
+            }
+        </style>
 }
 
-<div class="container mt-5">
-    <h1 class="text-center mb-4">Semester Application Status</h1>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Semester Application Status</h1>
 
-    <div class="card card-custom">
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>Semester</th>
-                    <th>Type</th>
-                    <th>Year</th>
-                    <th>Subjects</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var application in Model)
-                {
+        <div class="card card-custom">
+            <table class="table table-striped table-hover">
+                <thead>
                     <tr>
-                        <td>@application.Semester</td>
-                        <td>@application.SemesterType</td>
-                        <td>@application.Year</td>
-                        <td>
-                            <ul class="list-group">
-                                @foreach (var (subject, index) in application.Subjects.Select((subject, index) => (subject, index)))
-                                {
-                                    @if (index == 0)
-                                    {
-                                        <li class="list-group-item">@subject.Subject?.Name (@subject.Subject?.Code)</li>
-                                    }
-                                    else
-                                    {
-                                        <li class="list-group-item hidden-subjects" style="display: none;">@subject.Subject?.Name (@subject.Subject?.Code)</li>
-                                    }
-                                }
-                            </ul>
-                            <button class="btn btn-link p-0 toggle-view" onclick="toggleSubjects(this)">Show More</button>
-                        </td>
-                        <td>@application.Status</td>
+                        <th>Semester</th>
+                        <th>Type</th>
+                        <th>Year</th>
+                        <th>Subjects</th>
+                        <th>Status</th>
                     </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+                    @foreach (var application in Model)
+                    {
+                        <tr>
+                            <td>@application.Semester</td>
+                            <td>@application.SemesterType</td>
+                            <td>@application.Year</td>
+                            <td>
+                                <ul class="list-group">
+                                    @foreach (var (subject, index) in application.Subjects.Select((subject, index) => (subject, index)))
+                                    {
+                                        @if (index == 0)
+                                        {
+                                            <li class="list-group-item">@subject.Subject?.Name (@subject.Subject?.Code)</li>
+                                        }
+                                        else
+                                        {
+                                            <li class="list-group-item hidden-subjects" style="display: none;">@subject.Subject?.Name (@subject.Subject?.Code)</li>
+                                        }
+                                    }
+                                </ul>
+                                <button class="btn btn-link p-0 toggle-view" onclick="toggleSubjects(this)">Show More</button>
+                            </td>
+                            <td>@application.Status</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
 
-    <div class="text-center mt-4">
-        <a asp-action="Apply" class="btn btn-custom">Apply for Another Semester</a>
+        <div class="text-center mt-4">
+            <a asp-action="Apply" class="btn btn-custom">Apply for Another Semester</a>
+        </div>
     </div>
-</div>
-
+}
+else
+{
+    <div class="alert alert-danger mt-4 text-center">
+        You do not have permission to create users.
+    </div>
+}
 @section Scripts {
     <script>
         function toggleSubjects(button) {

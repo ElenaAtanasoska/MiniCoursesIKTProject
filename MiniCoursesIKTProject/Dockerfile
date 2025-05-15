@@ -1,6 +1,7 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 USER $APP_UID
 WORKDIR /app
+RUN mkdir -p /app/wwwroot/uploads && chown $APP_UID:$APP_UID /app/wwwroot/uploads
 EXPOSE 8080
 EXPOSE 8081
 

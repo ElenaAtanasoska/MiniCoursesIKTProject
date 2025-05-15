@@ -4,146 +4,155 @@
     ViewData["Title"] = "Manage Semester Applications";
 }
 
-@section Styles {
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: Arial, sans-serif;
-        }
+@if (User.IsInRole("Admin") || User.IsInRole("Editor"))
+{
 
-        .container {
-            max-width: 1200px;
-            margin-top: 50px;
-        }
+    @section Styles {
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <style>
+            body {
+                background-color: #f8f9fa;
+                font-family: Arial, sans-serif;
+            }
 
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #343a40;
-        }
+            .container {
+                max-width: 1200px;
+                margin-top: 50px;
+            }
 
-        table {
-            margin-top: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+            h1 {
+                text-align: center;
+                margin-bottom: 30px;
+                color: #343a40;
+            }
 
-        th {
-            background-color: #0d143e !important;
-            color: white;
-            text-align: center;
-        }
+            table {
+                margin-top: 20px;
+                background-color: white;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
 
-        td {
-            text-align: center;
-            vertical-align: middle;
-        }
+            th {
+                background-color: #0d143e !important;
+                color: white;
+                text-align: center;
+            }
 
-        ul {
-            list-style-type: none;
-            padding-left: 0;
-            margin-bottom: 0;
-        }
+            td {
+                text-align: center;
+                vertical-align: middle;
+            }
 
-        .subject-list {
-            margin-bottom: 0;
-        }
+            ul {
+                list-style-type: none;
+                padding-left: 0;
+                margin-bottom: 0;
+            }
 
-        .hidden-subjects {
-            display: none;
-        }
+            .subject-list {
+                margin-bottom: 0;
+            }
 
-        .toggle-view {
-            margin-top: 0;
-            padding: 0;
-            font-weight: bold;
-            color: #618bb4;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
+            .hidden-subjects {
+                display: none;
+            }
 
-        td.actions {
-            vertical-align: middle;
-            background-color: transparent !important;
-        }
+            .toggle-view {
+                margin-top: 0;
+                padding: 0;
+                font-weight: bold;
+                color: #618bb4;
+                background: none;
+                border: none;
+                cursor: pointer;
+            }
 
-        .actions form {
-            margin-bottom: 0;
-        }
+            td.actions {
+                vertical-align: middle;
+                background-color: transparent !important;
+            }
 
-        .actions {
-            justify-content: center;
-            gap: 10px;
-        }
-    </style>
+            .actions form {
+                margin-bottom: 0;
+            }
+
+            .actions {
+                justify-content: center;
+                gap: 10px;
+            }
+        </style>
 }
 
-<div class="container mt-5">
-    <h1 class="text-center mb-4">Manage Semester Applications</h1>
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <th>Student</th>
-                <th>Semester</th>
-                <th>Type</th>
-                <th>Year</th>
-                <th>Subjects</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var application in Model)
-            {
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Manage Semester Applications</h1>
+        <table class="table table-striped table-hover">
+            <thead>
                 <tr>
-                    <td>@application.Student?.Name @application.Student?.LastName (@application.StudentId)</td>
-                    <td>@application.Semester</td>
-                    <td>@application.SemesterType</td>
-                    <td>@application.Year</td>
-                    <td>
-                        <div>
-                            <ul class="subject-list">
-                                @for (int i = 0; i < application.Subjects.Count; i++)
-                                {
-                                    var subject = application.Subjects[i];
-                                    if (i < 2)
-                                    {
-                                        <li>@subject.Subject?.Name (@subject.Subject?.Code)</li>
-                                    }
-                                    else
-                                    {
-                                        <li class="hidden-subjects">@subject.Subject?.Name (@subject.Subject?.Code)</li>
-                                    }
-                                }
-                            </ul>
-                            @if (application.Subjects.Count > 2)
-                            {
-                                <button class="toggle-view" onclick="toggleSubjects(this)">Show More</button>
-                            }
-                        </div>
-                    </td>
-                    <td>@application.Status</td>
-
-                    <td class="actions p-0">
-                        <form asp-action="AcceptApplication" method="post" style="display:inline;">
-                            <input type="hidden" name="id" value="@application.Id" />
-                            <button type="submit" class="btn btn-success btn-sm">Accept</button>
-                        </form>
-                        <form asp-action="RejectApplication" method="post" style="display:inline;">
-                            <input type="hidden" name="id" value="@application.Id" />
-                            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
-                        </form>
-                    </td>
-
+                    <th>Student</th>
+                    <th>Semester</th>
+                    <th>Type</th>
+                    <th>Year</th>
+                    <th>Subjects</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @foreach (var application in Model)
+                {
+                    <tr>
+                        <td>@application.Student?.Name @application.Student?.LastName (@application.StudentId)</td>
+                        <td>@application.Semester</td>
+                        <td>@application.SemesterType</td>
+                        <td>@application.Year</td>
+                        <td>
+                            <div>
+                                <ul class="subject-list">
+                                    @for (int i = 0; i < application.Subjects.Count; i++)
+                                    {
+                                        var subject = application.Subjects[i];
+                                        if (i < 2)
+                                        {
+                                            <li>@subject.Subject?.Name (@subject.Subject?.Code)</li>
+                                        }
+                                        else
+                                        {
+                                            <li class="hidden-subjects">@subject.Subject?.Name (@subject.Subject?.Code)</li>
+                                        }
+                                    }
+                                </ul>
+                                @if (application.Subjects.Count > 2)
+                                {
+                                    <button class="toggle-view" onclick="toggleSubjects(this)">Show More</button>
+                                }
+                            </div>
+                        </td>
+                        <td>@application.Status</td>
 
+                        <td class="actions p-0">
+                            <form asp-action="AcceptApplication" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@application.Id" />
+                                <button type="submit" class="btn btn-success btn-sm">Accept</button>
+                            </form>
+                            <form asp-action="RejectApplication" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@application.Id" />
+                                <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                            </form>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger mt-4 text-center">
+        You do not have permission to create users.
+    </div>
+}
 
 @section Scripts {
     <script>

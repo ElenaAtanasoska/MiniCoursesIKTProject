@@ -21,13 +21,14 @@ public class HomeController : Controller
         _context = context;
         _userManager = userManager;
     }
-
+    /*
     public IActionResult Index()
     {
         return View();
     }
+    */
     [Authorize]
-    public async Task<IActionResult> Index1(string? searchQuery)
+    public async Task<IActionResult> Index(string? searchQuery)
     {
         var user = await _userManager.GetUserAsync(User);
 

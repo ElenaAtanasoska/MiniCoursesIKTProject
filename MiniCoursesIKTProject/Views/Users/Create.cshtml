@@ -4,53 +4,67 @@
     ViewData["Title"] = "Create User";
 }
 
-<h2>Create User</h2>
+@if (User.IsInRole("Admin") || User.IsInRole("Editor"))
+{
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Create New User</h2>
 
-<form asp-action="Create" method="post">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <form asp-action="Create" method="post" class="p-4 border rounded shadow-sm bg-light">
+                    <div class="form-group mb-3">
+                        <label asp-for="Role" class="font-weight-bold">Role</label>
+                        <select asp-for="Role" asp-items="ViewBag.Roles" class="form-control" id="roleDropdown">
+                            <option value="">Select Role</option>
+                        </select>
+                        <span asp-validation-for="Role" class="text-danger"></span>
+                    </div>
 
-    <div class="form-group mb-3">
-        <label asp-for="Role"></label>
-        <select asp-for="Role" asp-items="ViewBag.Roles" class="form-control" id="roleDropdown">
-            <option value="">Select Role</option>
-        </select>
-        <span asp-validation-for="Role" class="text-danger"></span>
+                    <div class="form-group mb-3" id="indeksField" style="display:none;">
+                        <label asp-for="Indeks" class="font-weight-bold">Index Number</label>
+                        <input asp-for="Indeks" class="form-control" />
+                        <span asp-validation-for="Indeks" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Email" class="font-weight-bold">Email</label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Name" class="font-weight-bold">First Name</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="LastName" class="font-weight-bold">Last Name</label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label asp-for="Password" class="font-weight-bold">Password</label>
+                        <input type="password" asp-for="Password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-success px-4 me-2">Create</button>
+                        <a asp-action="Index" class="btn btn-secondary px-4">Back to Users</a>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group mb-3" id="indeksField" style="display:none;">
-        <label asp-for="Indeks"></label>
-        <input asp-for="Indeks" class="form-control" />
-        <span asp-validation-for="Indeks" class="text-danger"></span>
+}
+else
+{
+    <div class="alert alert-danger mt-4 text-center">
+        You do not have permission to create users.
     </div>
-
-    <div class="form-group mb-3">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-
-    <div class="form-group mb-3">
-        <label asp-for="Name">First Name</label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
-
-    <div class="form-group mb-3">
-        <label asp-for="LastName">Last Name</label>
-        <input asp-for="LastName" class="form-control" />
-        <span asp-validation-for="LastName" class="text-danger"></span>
-    </div>
-
-    <div class="form-group mb-2">
-        <label for="Password">Password</label>
-        <input type="password" asp-for="Password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-
-    
-
-    <button type="submit" class="btn btn-primary">Create</button>
-    <a asp-action="Index">Back to users</a>
-</form>
+}
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
@@ -68,7 +82,6 @@
         }
 
         roleDropdown.addEventListener('change', toggleIndeksField);
-
         toggleIndeksField();
     </script>
 }

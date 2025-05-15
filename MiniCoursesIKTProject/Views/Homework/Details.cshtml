@@ -19,65 +19,70 @@
     </dl>
 </div>
 
-<h3>Student Submissions</h3>
-@if (!Model.UserUploads.Any())
+@if (User.IsInRole("Professor"))
 {
-    <p class="alert alert-info">No users available for this homework.</p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Student</th>
-                <th>Enrolled</th>
-                <th>Status</th>
-                <th>Grade</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var user in Model.UserUploads)
-            {
+    <h3>Student Submissions</h3>
+    @if (!Model.UserUploads.Any())
+    {
+        <p class="alert alert-info">No users available for this homework.</p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@user.UserName</td>
-                    <td>@(user.IsEnrolled ? "Yes" : "No")</td>
-                    <td>@(user.HasUploaded ? "Uploaded" : "Not Uploaded")</td>
-                    <td>@(user.Grade?.ToString() ?? "Not graded")</td>
-                    <td>
-                        @if (user.HasUploaded && user.GradedFileId.HasValue)
-                        {
-                            <a asp-action="DownloadFile" asp-route-fileId="@user.GradedFileId" class="btn btn-primary btn-sm">Download</a>
-                            <form asp-action="GradeFile" method="post" style="display:inline;">
-                                <input type="hidden" name="fileId" value="@user.GradedFileId" />
-                                <input type="number" name="grade" min="0" max="100" value="@(user.Grade ?? 0)" class="form-control d-inline-block" style="width:100px;" />
-                                <input type="submit" value="Grade" class="btn btn-success btn-sm" />
-                            </form>
-                        }
-                    </td>
+                    <th>Student</th>
+                    <th>Enrolled</th>
+                    <th>Status</th>
+                    <th>Grade</th>
+                    <th>Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.UserUploads)
+                {
+                    <tr>
+                        <td>@user.UserName</td>
+                        <td>@(user.IsEnrolled ? "Yes" : "No")</td>
+                        <td>@(user.HasUploaded ? "Uploaded" : "Not Uploaded")</td>
+                        <td>@(user.Grade?.ToString() ?? "Not graded")</td>
+                        <td>
+                            @if (user.HasUploaded && user.GradedFileId.HasValue)
+                            {
+                                <a asp-action="DownloadFile" asp-route-fileId="@user.GradedFileId" class="btn btn-primary btn-sm">Download</a>
+                                <form asp-action="GradeFile" method="post" style="display:inline;">
+                                    <input type="hidden" name="fileId" value="@user.GradedFileId" />
+                                    <input type="number" name="grade" min="0" max="100" value="@(user.Grade ?? 0)" class="form-control d-inline-block" style="width:100px;" />
+                                    <input type="submit" value="Grade" class="btn btn-success btn-sm" />
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 }
 
-<h3>Upload File</h3>
-@if (TempData["Error"] != null)
+@if (User.IsInRole("Student"))
 {
-    <div class="alert alert-danger">@TempData["Error"]</div>
+    <h3>Upload File</h3>
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+    <form asp-action="UploadFile" asp-route-homeworkId="@Model.Id" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="file">Select File</label>
+            <input type="file" name="file" class="form-control-file" />
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Upload" class="btn btn-primary" />
+        </div>
+    </form>
 }
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success">@TempData["Success"]</div>
-}
-<form asp-action="UploadFile" asp-route-homeworkId="@Model.Id" method="post" enctype="multipart/form-data">
-    <div class="form-group">
-        <label for="file">Select File</label>
-        <input type="file" name="file" class="form-control-file" />
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Upload" class="btn btn-primary" />
-    </div>
-</form>
-
 <a asp-action="List" class="btn btn-secondary">Back to List</a>
